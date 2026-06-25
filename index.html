@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forever Pages — Memorial Website Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parchment:#FBF7F1;
+    --parchment-deep:#F2EBDF;
+    --ink:#21242A;
+    --ink-soft:#565C66;
+    --sage:#6F8268;
+    --gold:#C9A463;
+    --rose:#B97D86;
+    --slate:#5C6773;
+    --line: rgba(33,36,42,0.12);
+    --white:#fff;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  input,textarea,select{font-family:inherit;font-size:15px;}
+  a{color:inherit;}
+  .app{
+    max-width:1180px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 28px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:19px;}
+  .candle{width:22px;height:28px;flex:none;}
+  .restart-link{font-size:13px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;}
+
+  /* ---------- LANDING ---------- */
+  .landing{
+    padding:40px 28px 80px;
+    text-align:center;
+  }
+  .landing .flower-hero{width:84px;height:84px;margin:0 auto 18px;position:relative;z-index:1;}
+  .landing{position:relative;}
+  .hero-glow{
+    position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+    width:380px;height:380px;border-radius:50%;
+    background:radial-gradient(circle, rgba(231,201,201,0.35) 0%, rgba(243,230,211,0.18) 45%, transparent 75%);
+    filter:blur(2px);z-index:0;pointer-events:none;
+  }
+  .flower-breathe{animation:breathe 5.5s ease-in-out infinite;transform-origin:50% 50%;}
+  @keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.045);}}
+
+  .petals-field{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
+  .petal{position:absolute;top:-10%;opacity:0;animation:petal-fall linear infinite;}
+  .petal-svg{width:100%;height:auto;display:block;}
+  .petal-rose path{fill:#D8A8AE;}
+  .petal-gold path{fill:#E3C68C;}
+  .petal-cream path{fill:#F1E6D2;}
+  .petal-sage path{fill:#B9C7AC;}
+  @keyframes petal-fall{
+    0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:0;}
+    8%{opacity:.8;}
+    50%{transform:translateY(55vh) translateX(var(--drift)) rotate(160deg);}
+    92%{opacity:.8;}
+    100%{transform:translateY(115vh) translateX(calc(var(--drift) * -1)) rotate(320deg); opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .petals-field{display:none;}
+    .flower-breathe{animation:none;}
+  }
+  .landing h1{font-size:clamp(34px,6vw,56px);line-height:1.08;margin:0 0 18px;}
+  .landing p.sub{font-size:18px;color:var(--ink-soft);max-width:520px;margin:0 auto 36px;line-height:1.5;}
+  .landing-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
+  .btn{
+    padding:14px 26px;border-radius:999px;font-size:15px;font-weight:600;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{background:var(--ink);color:var(--parchment);}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(33,36,42,0.18);}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .promise-row{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:760px;margin:0 auto;
+  }
+  .promise{
+    background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 18px;text-align:left;
+  }
+  .promise .num{font-family:'Fraunces',serif;font-size:22px;color:var(--gold);}
+  .promise p{font-size:14px;color:var(--ink-soft);margin:6px 0 0;line-height:1.45;}
+  @media(max-width:680px){.promise-row{grid-template-columns:1fr;}}
+  .included-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:18px auto 0;
+  }
+  @media(max-width:760px){.included-row{grid-template-columns:repeat(2,1fr);}}
+  .included-card{
+    text-align:left;padding:16px 16px;border-radius:12px;background:var(--parchment-deep);
+  }
+  .included-card .t{font-size:13.5px;font-weight:600;margin-bottom:5px;}
+  .included-card .d{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+
+  /* ---------- WIZARD SHELL ---------- */
+  .wizard{display:flex;flex:1;gap:0;padding:0 28px 60px;align-items:flex-start;}
+  .steps-rail{
+    width:208px;flex:none;position:sticky;top:24px;padding-top:8px;
+  }
+  .step-item{
+    display:flex;gap:12px;align-items:flex-start;padding:10px 0;
+    opacity:.42;transition:opacity .2s ease;
+  }
+  .step-item.active,.step-item.done{opacity:1;}
+  .step-num{
+    width:24px;height:24px;border-radius:50%;border:1.5px solid var(--ink-soft);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;
+    flex:none;margin-top:1px;
+  }
+  .step-item.active .step-num{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+  .step-item.done .step-num{background:var(--sage);color:#fff;border-color:var(--sage);}
+  .step-label{font-size:13.5px;font-weight:600;line-height:1.3;margin-top:1px;}
+  .step-rail-line{width:1px;background:var(--line);position:absolute;left:11px;top:32px;bottom:8px;}
+
+  .panel{
+    flex:1;background:var(--white);border:1px solid var(--line);border-radius:18px;
+    padding:40px 44px;min-height:480px;
+  }
+  @media(max-width:820px){
+    .wizard{flex-direction:column;padding:0 16px 50px;}
+    .steps-rail{display:none;}
+    .panel{padding:28px 22px;width:100%;}
+    .mobile-progress{display:flex;gap:6px;padding:0 16px 6px;}
+  }
+  .mobile-progress{display:none;}
+  .mobile-progress .dot{flex:1;height:4px;border-radius:3px;background:var(--line);}
+  .mobile-progress .dot.done{background:var(--sage);}
+  @media(max-width:820px){.mobile-progress{display:flex;}}
+
+  .panel-eyebrow{margin-bottom:6px;}
+  .panel h2{font-size:28px;margin:0 0 8px;}
+  .panel .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 30px;line-height:1.5;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
+  .field .hint{font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .field input,.field textarea,.field select{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    background:var(--parchment);outline:none;transition:border-color .15s ease;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--ink);}
+  .field textarea{resize:vertical;min-height:100px;}
+  .field.error input,.field.error textarea{border-color:#B0413E;}
+  .field .err-msg{font-size:12px;color:#B0413E;margin-top:5px;display:none;}
+  .field.error .err-msg{display:block;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:560px){.grid-2{grid-template-columns:1fr;}}
+
+  .footer-actions{display:flex;justify-content:space-between;align-items:center;margin-top:32px;}
+  .footer-actions .right{display:flex;gap:10px;}
+
+  /* templates grid */
+  .tpl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:760px){.tpl-grid{grid-template-columns:repeat(2,1fr);}}
+  .tpl-card{
+    border:2px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;
+    transition:border-color .15s ease,transform .15s ease;background:var(--white);
+  }
+  .tpl-card:hover{transform:translateY(-2px);}
+  .tpl-card.selected{border-color:var(--ink);}
+  .tpl-swatch{height:64px;}
+  .tpl-name{font-size:12.5px;font-weight:600;padding:9px 10px 0;}
+  .tpl-region{font-size:11px;color:var(--ink-soft);padding:1px 10px 9px;}
+
+  /* photos */
+  .dropzone{
+    border:2px dashed var(--line);border-radius:14px;padding:34px 20px;text-align:center;
+    color:var(--ink-soft);font-size:14px;cursor:pointer;transition:border-color .15s ease,background .15s ease;
+  }
+  .dropzone.drag{border-color:var(--sage);background:var(--parchment-deep);}
+  .photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px;}
+  @media(max-width:600px){.photo-grid{grid-template-columns:repeat(3,1fr);}}
+  .photo-thumb{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1/1;background:var(--parchment-deep);}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-thumb .rm{
+    position:absolute;top:4px;right:4px;background:rgba(33,36,42,0.7);color:#fff;
+    width:20px;height:20px;border-radius:50%;font-size:12px;line-height:20px;text-align:center;
+  }
+  .checkbox-row{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:14px;}
+  .chapter-row{
+    border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;
+    display:grid;grid-template-columns:120px 1fr 28px;gap:8px;position:relative;
+  }
+  .chapter-row input{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--parchment);font-size:13.5px;}
+  .chapter-row textarea{
+    grid-column:1 / -1;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--parchment);
+    font-size:13.5px;min-height:54px;resize:vertical;font-family:inherit;
+  }
+  .rm-chapter{font-size:13px;color:var(--ink-soft);align-self:center;}
+
+  /* guestbook radios */
+  .radio-card{
+    border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;
+    display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:border-color .15s ease;
+  }
+  .radio-card.selected{border-color:var(--ink);background:var(--parchment);}
+  .radio-card input{margin-top:3px;}
+  .radio-card .t{font-weight:600;font-size:14.5px;}
+  .radio-card .d{font-size:13px;color:var(--ink-soft);margin-top:2px;}
+
+  /* preview / live page render */
+  .browser-frame{
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;
+  }
+  .browser-bar{
+    background:var(--parchment-deep);padding:9px 14px;display:flex;align-items:center;gap:8px;
+    font-size:11.5px;color:var(--ink-soft);
+  }
+  .browser-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--line);}
+  .browser-url{
+    background:#fff;border-radius:6px;padding:3px 10px;font-size:11.5px;flex:1;
+    border:1px solid var(--line);
+  }
+  .memorial-page{padding:0;}
+  .mem-hero{padding:48px 26px 28px;text-align:center;}
+  .mem-photo{
+    width:108px;height:108px;border-radius:50%;object-fit:cover;border:3px solid;margin:0 auto 16px;
+    display:block;background:var(--parchment-deep);
+  }
+  .mem-name{font-family:'Fraunces',serif;font-size:30px;margin:0 0 6px;}
+  .mem-dates{font-size:13.5px;opacity:.75;letter-spacing:.02em;}
+  .mem-section{padding:26px;border-top:1px solid rgba(0,0,0,0.08);}
+  .mem-section h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px;opacity:.6;}
+  .mem-bio{font-size:14.5px;line-height:1.7;}
+  .mem-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .mem-gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;}
+  .mem-guestbook-entry{padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13.5px;}
+  .mem-guestbook-entry b{display:block;font-size:12.5px;margin-bottom:2px;}
+  .mem-gb-form{display:flex;gap:8px;margin-top:14px;}
+  .mem-gb-form input{flex:1;padding:9px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);font-size:13px;}
+  .mem-share{display:flex;gap:10px;justify-content:center;padding:22px 26px;}
+  .mem-footer{padding:18px;text-align:center;font-size:11.5px;opacity:.5;border-top:1px solid rgba(0,0,0,0.08);}
+
+  .moments-carousel{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:rgba(0,0,0,0.08);}
+  .moment-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease;}
+  .moment-slide.active{opacity:1;}
+  .moments-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;justify-content:center;z-index:2;}
+  .m-dot{width:16px;height:3px;border-radius:2px;background:rgba(255,255,255,.5);transition:background .3s ease;}
+  .m-dot.active{background:#fff;}
+
+  .story-timeline{display:flex;flex-direction:column;gap:24px;}
+  .story-chapter{
+    display:flex;gap:16px;align-items:center;
+    opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;
+  }
+  .story-chapter.in-view{opacity:1;transform:translateY(0);}
+  .story-chapter.right{flex-direction:row-reverse;}
+  .story-photo{width:104px;height:104px;border-radius:12px;overflow:hidden;flex:none;background:rgba(0,0,0,.08);}
+  .story-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .story-year{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+  .story-title{font-family:'Fraunces',serif;font-size:16px;margin:3px 0 4px;}
+  .story-body{font-size:13px;line-height:1.55;opacity:.85;}
+  @media(max-width:560px){
+    .story-chapter,.story-chapter.right{flex-direction:column;align-items:flex-start;}
+    .story-photo{width:100%;height:150px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .story-chapter{opacity:1;transform:none;transition:none;}
+  }
+
+  /* payment */
+  .pay-options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+  @media(max-width:600px){.pay-options{grid-template-columns:repeat(2,1fr);}}
+  .pay-opt{border:1.5px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .pay-opt.selected{border-color:var(--ink);background:var(--parchment);}
+  .price-box{
+    background:var(--parchment);border-radius:12px;padding:18px 20px;display:flex;
+    justify-content:space-between;align-items:center;margin-bottom:24px;
+  }
+  .price-box .amt{font-family:'Fraunces',serif;font-size:26px;}
+
+  /* published */
+  .published-hero{text-align:center;padding:30px 0 10px;}
+  .published-candle{width:46px;height:60px;margin:0 auto 14px;}
+  .live-url-box{
+    background:var(--parchment);border:1px solid var(--line);border-radius:12px;
+    padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    max-width:420px;margin:0 auto 26px;font-size:14px;font-weight:600;
+  }
+  .copy-btn{font-size:12px;font-weight:600;color:var(--sage);background:none;border:none;}
+  .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0;}
+  @media(max-width:680px){.dash-grid{grid-template-columns:repeat(2,1fr);}}
+  .dash-card{border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center;}
+  .dash-card .v{font-family:'Fraunces',serif;font-size:24px;}
+  .dash-card .l{font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+
+  .addon-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-6px 0 22px;}
+  .addon-badge{
+    font-size:11.5px;font-weight:600;color:var(--sage);background:var(--parchment);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+  }
+
+  /* ---- add-on store ---- */
+  .addons-wrap{padding-bottom:90px;}
+  .addon-category{margin-top:30px;}
+  .addon-category:first-of-type{margin-top:6px;}
+  .addon-category h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 14px;font-family:'Inter',sans-serif;font-weight:700;}
+  .addon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:820px){.addon-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.addon-grid{grid-template-columns:1fr;}}
+  .addon-card{border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;background:var(--white);}
+  .addon-card.owned{background:var(--parchment);}
+  .addon-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+  .addon-name{font-weight:600;font-size:14.5px;}
+  .addon-price{font-family:'Fraunces',serif;font-size:15px;color:var(--gold);flex:none;}
+  .addon-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px;flex:1;}
+  .addon-btn{width:100%;padding:10px;font-size:13px;border-radius:10px;text-align:center;}
+  .addon-btn:disabled{opacity:.7;cursor:default;}
+
+  .cart-bar{
+    position:fixed;left:0;right:0;bottom:-100px;background:var(--ink);color:var(--parchment);
+    padding:16px 28px;display:flex;justify-content:space-between;align-items:center;
+    transition:bottom .25s ease;z-index:5;max-width:1180px;margin:0 auto;border-radius:16px 16px 0 0;
+  }
+  .cart-bar.show{bottom:0;}
+  .cart-info{font-size:14px;font-weight:600;}
+  .cart-bar .btn-ghost{color:var(--parchment);border-color:rgba(251,247,241,0.35);}
+  .cart-bar .btn-primary{background:var(--gold);color:var(--ink);}
+  .cart-bar .btn-primary:disabled{opacity:.5;}
+
+  .cart-summary{border:1px solid var(--line);border-radius:12px;padding:6px 18px;margin-bottom:22px;}
+  .cart-line{display:flex;justify-content:space-between;padding:11px 0;font-size:14px;border-bottom:1px solid var(--line);}
+  .cart-line:last-child{border-bottom:none;}
+  .cart-line.total{font-weight:700;font-family:'Fraunces',serif;font-size:16px;}
+
+  /* ---- live page add-on effects ---- */
+  .bio-note{font-size:11.5px;font-weight:600;margin-top:10px;}
+  .design-badge{
+    display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    border:1px solid;border-radius:999px;padding:3px 11px;margin-bottom:12px;
+  }
+  .video-placeholder{
+    border-radius:12px;background:rgba(0,0,0,0.06);padding:30px 20px;text-align:center;
+  }
+  .play-btn{
+    width:46px;height:46px;border:1.5px solid;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;margin:0 auto 10px;font-size:14px;
+  }
+  .video-caption{font-size:12.5px;opacity:.7;}
+
+  .preview-link{
+    font-size:12px;font-weight:600;color:var(--sage);text-align:left;margin-bottom:10px;
+    text-decoration:underline;text-underline-offset:2px;
+  }
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(33,36,42,0.55);z-index:50;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    backdrop-filter:blur(2px);
+  }
+  .modal-card{
+    background:var(--white);border-radius:18px;max-width:560px;width:100%;
+    max-height:88vh;overflow-y:auto;padding:28px 26px;
+  }
+  .modal-card.modal-wide{max-width:680px;}
+  .modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+  .modal-head h3{font-size:20px;margin:2px 0 0;}
+  .modal-close{font-size:14px;color:var(--ink-soft);width:30px;height:30px;border-radius:50%;flex:none;}
+  .modal-close:hover{background:var(--parchment);}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:560px){.compare-grid{grid-template-columns:1fr;}}
+  .compare-col{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--parchment);}
+  .compare-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:10px;}
+  .preview-frame{border-radius:10px;overflow:hidden;}
+
+  .book-mockup{text-align:center;padding:10px 0;}
+  .book-cover{
+    width:150px;height:200px;margin:0 auto;border-radius:4px 8px 8px 4px;
+    box-shadow:4px 4px 0 rgba(0,0,0,0.12), inset -4px 0 0 rgba(0,0,0,0.18);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;
+  }
+  .book-photo{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.4);overflow:hidden;border:2px solid rgba(255,255,255,0.7);}
+  .book-photo img{width:100%;height:100%;object-fit:cover;}
+  .book-title{font-family:'Fraunces',serif;color:#fff;font-size:13px;text-align:center;line-height:1.2;}
+  .book-sub{color:rgba(255,255,255,0.8);font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+
+  .support-card{
+    border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;
+    justify-content:space-between;align-items:center;background:var(--parchment);font-size:13px;
+  }
+  .support-card b{font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
+  .support-card.priority{border-color:var(--sage);background:#F0F4ED;}
+
+  .disclaimer{font-size:11.5px;color:var(--ink-soft);text-align:center;padding:24px 28px 30px;line-height:1.6;}
+
+  @media (prefers-reduced-motion: reduce){
+    .flame-flicker{animation:none !important;}
+  }
+  @keyframes flicker{
+    0%,100%{transform:scaleY(1) scaleX(1);}
+    25%{transform:scaleY(1.05) scaleX(.97);}
+    50%{transform:scaleY(.96) scaleX(1.03);}
+    75%{transform:scaleY(1.03) scaleX(.98);}
+  }
+  .flame-flicker{animation:flicker 2.4s ease-in-out infinite;transform-origin:bottom center;}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+/* ---------------- portable storage shim ----------------
+   Uses Claude's built-in window.storage when this file runs inside a
+   Claude artifact. When self-hosted anywhere else, falls back to the
+   browser's own localStorage so drafts still persist per-visitor. */
+const storageAPI = (typeof window !== 'undefined' && window.storage) ? window.storage : {
+  async get(key){
+    const v = localStorage.getItem(key);
+    if(v === null) throw new Error('not found');
+    return {key, value:v};
+  },
+  async set(key, value){
+    localStorage.setItem(key, value);
+    return {key, value};
+  },
+  async delete(key){
+    localStorage.removeItem(key);
+    return {key, deleted:true};
+  }
+};
+
+/* ---------------- candle icon ---------------- */
+function candleSVG(lit, size){
+  size = size || 24;
+  const flameColor = lit ? '#C9A463' : '#C7C2B8';
+  const flameInner = lit ? '#F0D9A3' : '#DAD6CC';
+  return `
+  <svg class="candle" viewBox="0 0 40 52" width="${size}" height="${size*1.3}" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="${lit ? 'flame-flicker' : ''}" d="M20 4C20 4 13 14 13 20C13 25 16 28 20 28C24 28 27 25 27 20C27 14 20 4 20 4Z" fill="${flameColor}"/>
+    <path d="M20 11C20 11 17 16 17 20C17 22.5 18.3 24 20 24C21.7 24 23 22.5 23 20C23 16 20 11 20 11Z" fill="${flameInner}"/>
+    <rect x="13" y="28" width="14" height="20" rx="2" fill="#EFE7DA" stroke="#D8CDBA"/>
+    <rect x="11" y="46" width="18" height="4" rx="1.5" fill="#D8CDBA"/>
+  </svg>`;
+}
+
+function flowerHeroSVG(size){
+  size = size || 88;
+  const petals = [0,45,90,135,180,225,270,315].map(deg=>`
+    <g transform="rotate(${deg} 50 50)">
+      <path d="M50 50 C 47 32, 42 20, 50 8 C 58 20, 53 32, 50 50 Z" fill="url(#petalGrad)" stroke="#D8C7A8" stroke-width="0.4"/>
+    </g>`).join('');
+  return `
+  <svg class="flower-breathe" viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="petalGrad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#E7C9C9"/>
+        <stop offset="100%" stop-color="#F3E6D3"/>
+      </linearGradient>
+    </defs>
+    ${petals}
+    <circle cx="50" cy="50" r="9" fill="#C9A463"/>
+  </svg>`;
+}
+
+function petalSVG(cls){
+  return `<svg viewBox="0 0 20 26" class="petal-svg ${cls}" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 0 C 16 7, 16 17, 10 26 C 4 17, 4 7, 10 0 Z"/>
+  </svg>`;
+}
+
+function petalsField(){
+  // gentle, sparse, slow — ambience only, not decoration for its own sake
+  const colorClasses = ['petal-rose','petal-gold','petal-cream','petal-sage'];
+  const petals = Array.from({length:11}).map((_,i)=>{
+    const left = (i * 9 + (i%3)*3 + 2) % 100;
+    const delay = (i * 1.7) % 14;
+    const duration = 16 + (i % 5) * 3;
+    const size = 14 + (i % 4) * 4;
+    const drift = (i % 2 === 0 ? 1 : -1) * (24 + (i % 3) * 10);
+    const cls = colorClasses[i % colorClasses.length];
+    return `<div class="petal" style="left:${left}%; animation-delay:-${delay}s; animation-duration:${duration}s; width:${size}px; --drift:${drift}px;">${petalSVG(cls)}</div>`;
+  }).join('');
+  return `<div class="petals-field" aria-hidden="true">${petals}</div>`;
+}
+
+/* ---------------- state ---------------- */
+const TEMPLATES = [
+  {id:'heritage', name:'American Heritage', region:'Inspired by the US', bg:'#F7F1E6', text:'#1F2D3D', accent:'#B68D40'},
+  {id:'garden', name:'English Garden', region:'Inspired by the UK', bg:'#F4EFE3', text:'#23362A', accent:'#A98A35'},
+  {id:'stone', name:'European Stone', region:'Inspired by Europe', bg:'#F1E9DC', text:'#3B362C', accent:'#A8703E'},
+  {id:'outback', name:'Outback Amber', region:'Inspired by Australia', bg:'#F6E8D2', text:'#3B2A1E', accent:'#C1652B'},
+  {id:'fern', name:'Silver Fern', region:'Inspired by New Zealand', bg:'#EFF3EF', text:'#1B2B22', accent:'#2E6E5E'},
+  {id:'midnight', name:'Midnight', region:'Timeless', bg:'#1B1B1E', text:'#F2F0EC', accent:'#C9A463'},
+  {id:'coastal', name:'Coastal', region:'Timeless', bg:'#EAF3F8', text:'#1F3140', accent:'#5C8AA6'},
+  {id:'simple', name:'Simple', region:'Timeless', bg:'#FFFFFF', text:'#333333', accent:'#8C8C8C'},
+];
+
+const STEP_DEFS = [
+  {key:'signup', label:'Sign up'},
+  {key:'template', label:'Choose template'},
+  {key:'details', label:'Memorial details'},
+  {key:'photos', label:'Photos'},
+  {key:'guestbook', label:'Guestbook'},
+  {key:'preview', label:'Preview'},
+  {key:'payment', label:'Payment'},
+  {key:'published', label:'Published'},
+];
+
+const FEATURES = [
+  {t:'Secure hosting, forever', d:'Your page stays online for life, on a secure connection. Nothing to set up or renew.'},
+  {t:'A guestbook for memories', d:'A space on the page where family and friends can write a message or memory.'},
+  {t:'A scannable visiting code', d:'A small printable code for a headstone, plaque or card — visitors scan it with their phone to open the page instantly.'},
+  {t:'One link to share', d:'A simple web address you can text, email or post, so anyone can find the page.'},
+];
+
+const ADDONS = [
+  {id:'custom-design', name:'Custom Design', price:25, recurring:false, category:'Make it personal',
+    desc:'A designer reshapes the layout, colors and type around their personality — beyond the template.'},
+  {id:'ai-bio', name:'AI Biography Polish', price:10, recurring:false, category:'Capture the story',
+    desc:'We refine the grammar, flow and tone of the biography you already wrote, in minutes.'},
+  {id:'pro-bio', name:'Professional Biography Writing', price:20, recurring:false, category:'Capture the story',
+    desc:'A writer interviews family by phone and writes the biography for you, start to finish.'},
+  {id:'video-tribute', name:'Video Tribute', price:15, recurring:false, category:'Capture the story',
+    desc:'Turn the photos into a short, gentle tribute video, added right onto the page.'},
+  {id:'extra-photos', name:'+20 Extra Photos', price:5, recurring:false, category:'Capture the story',
+    desc:'Raise the gallery limit from 20 photos to 40.'},
+  {id:'qr-code', name:'QR Code for Headstone', price:20, recurring:false, category:'Keep it physical',
+    desc:'A printable code for a headstone, plaque or order-of-service — scan it to open the page instantly.'},
+  {id:'memory-book', name:'Printed Memory Book', price:40, recurring:false, category:'Keep it physical',
+    desc:'A bound, printed keepsake of the biography, photos and guestbook messages, mailed to your door.'},
+  {id:'custom-domain', name:'Custom Domain', price:30, recurring:true, category:'Stay supported',
+    desc:'Use their own address, like robertsmith.com, instead of memorial.com/robert-smith.'},
+  {id:'priority-support', name:'Priority Support', price:10, recurring:false, category:'Stay supported',
+    desc:'Skip the queue — a real person responds to questions within the hour.'},
+];
+
+let state = {
+  screen:'landing', // landing | wizard | addons
+  stepIndex:0,
+  user:{name:'',email:''},
+  memorial:{
+    template:'heritage', name:'', dob:'', dop:'', bio:'', family:'', location:'', religion:'',
+    photos:[], hasVideo:false, guestbook:'public', storyChapters:[]
+  },
+  guestbookEntries:[],
+  paid:false,
+  payMethod:'card',
+  addonScreen:'store', // store | checkout | done
+  cart:[],
+  purchasedAddons:[],
+  lastPurchased:[],
+  addonPayMethod:'card',
+  previewModal:null // null | addon id | 'all'
+};
+
+const STORAGE_KEY = 'memorial-builder-draft';
+
+async function loadDraft(){
+  try{
+    const res = await storageAPI.get(STORAGE_KEY);
+    if(res && res.value){
+      const saved = JSON.parse(res.value);
+      state = Object.assign(state, saved, {memorial: Object.assign(state.memorial, saved.memorial||{}, {photos:[]})});
+    }
+  }catch(e){ /* no draft yet */ }
+  render();
+}
+
+async function saveDraft(){
+  try{
+    const toSave = {
+      screen: state.screen, stepIndex: state.stepIndex, user: state.user,
+      memorial: Object.assign({}, state.memorial, {photos: []}), // photos kept in-memory only
+      guestbookEntries: state.guestbookEntries, paid: state.paid,
+      addonScreen: state.addonScreen, cart: state.cart, purchasedAddons: state.purchasedAddons, lastPurchased: state.lastPurchased
+    };
+    await storageAPI.set(STORAGE_KEY, JSON.stringify(toSave));
+  }catch(e){ console.error('save failed', e); }
+}
+
+function slugify(name){
+  return (name||'loved-one').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-') || 'loved-one';
+}
+
+/* ---------------- render root ---------------- */
+const app = document.getElementById('app');
+
+function render(){
+  if(state.screen === 'landing'){
+    app.innerHTML = renderLanding();
+    bindLanding();
+  } else if(state.screen === 'addons'){
+    app.innerHTML = renderTopbar() + renderAddonsScreen();
+    bindAddonsScreen();
+    if(state.previewModal){
+      app.insertAdjacentHTML('beforeend', renderPreviewModal());
+      bindPreviewModal();
+    }
+  } else {
+    app.innerHTML = renderTopbar() + renderMobileProgress() + renderWizard();
+    bindWizard();
+  }
+  window.scrollTo({top:0, behavior:'instant'});
+  startCarousel();
+  attachStoryAnimations();
+}
+
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function startCarousel(){
+  if(window.__carouselTimer) clearInterval(window.__carouselTimer);
+  const slides = document.querySelectorAll('.moment-slide');
+  const dots = document.querySelectorAll('.m-dot');
+  if(slides.length < 2 || reduceMotion) return;
+  let idx = 0;
+  window.__carouselTimer = setInterval(()=>{
+    slides[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
+    idx = (idx+1) % slides.length;
+    slides[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
+  }, 3000);
+}
+
+function attachStoryAnimations(){
+  const els = document.querySelectorAll('.story-chapter');
+  if(!els.length) return;
+  if(reduceMotion){ els.forEach(el=>el.classList.add('in-view')); return; }
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in-view'); });
+  }, {threshold:0.15});
+  els.forEach(el=>obs.observe(el));
+}
+
+function renderTopbar(){
+  return `
+  <div class="topbar">
+    <div class="brand">${candleSVG(state.paid, 22)}<span class="brand-name">Forever Pages</span></div>
+    <button class="restart-link" id="restartBtn">Start over</button>
+  </div>`;
+}
+
+function renderMobileProgress(){
+  const dots = STEP_DEFS.map((s,i)=>`<div class="dot ${i<=state.stepIndex?'done':''}"></div>`).join('');
+  return `<div class="mobile-progress">${dots}</div>`;
+}
+
+/* ---------------- landing ---------------- */
+function renderLanding(){
+  return `
+  ${petalsField()}
+  ${renderTopbar()}
+  <div class="landing">
+    <div class="hero-glow"></div>
+    <div class="eyebrow" style="margin-bottom:14px;">A quiet place to remember</div>
+    <div class="flower-hero">${flowerHeroSVG(84)}</div>
+    <h1>Preserve their<br/>memory, gently.</h1>
+    <p class="sub">A calm, beautiful online memorial — ready in under 10 minutes, for $5. Take a moment. This is a space to remember at your own pace.</p>
+    <div class="landing-cta">
+      <button class="btn btn-primary" id="createBtn">Create a memorial</button>
+      <button class="btn btn-ghost" id="demoBtn">View a live example</button>
+    </div>
+    <div class="promise-row">
+      <div class="promise"><div class="num">10 min</div><p>From sign up to a live website. No technical skill required.</p></div>
+      <div class="promise"><div class="num">$5</div><p>One time payment. Everything below is included — no subscription.</p></div>
+      <div class="promise"><div class="num">8</div><p>Beautiful templates to choose from — nothing to design yourself.</p></div>
+    </div>
+    <div class="included-row">
+      ${FEATURES.map(f=>`<div class="included-card"><div class="t">${f.t}</div><div class="d">${f.d}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="disclaimer">Interactive prototype — payment, hosting and storage are simulated for demonstration.</div>
+  `;
+}
+
+function bindLanding(){
+  document.getElementById('createBtn').onclick = ()=>{ state.screen='wizard'; state.stepIndex=0; saveDraft(); render(); };
+  document.getElementById('demoBtn').onclick = ()=>{
+    state.user = {name:'Demo User', email:'demo@example.com'};
+    state.memorial = Object.assign(state.memorial, {
+      template:'garden', name:'Margaret "Peggy" Holloway', dob:'1938-03-14', dop:'2026-05-02',
+      bio:'Margaret spent forty years teaching third grade at Lincoln Elementary and never missed a Sunday call with her grandchildren. She loved her rose garden, terrible puns, and a strong cup of tea at 4pm sharp.',
+      family:'Daughter Anne, son David, five grandchildren', location:'Bristol, UK', religion:'', guestbook:'public'
+    });
+    state.paid = true; state.screen='wizard'; state.stepIndex=7; saveDraft(); render();
+  };
+}
+
+/* ---------------- wizard shell ---------------- */
+function renderWizard(){
+  const stepsRail = `
+    <div class="steps-rail">
+      ${STEP_DEFS.map((s,i)=>`
+        <div class="step-item ${i===state.stepIndex?'active':(i<state.stepIndex?'done':'')}">
+          <div class="step-num">${i<state.stepIndex ? '✓' : i+1}</div>
+          <div class="step-label">${s.label}</div>
+        </div>`).join('')}
+    </div>`;
+  return `<div class="wizard">${stepsRail}<div class="panel">${renderStepContent()}</div></div>`;
+}
+
+function renderStepContent(){
+  switch(STEP_DEFS[state.stepIndex].key){
+    case 'signup': return stepSignup();
+    case 'template': return stepTemplate();
+    case 'details': return stepDetails();
+    case 'photos': return stepPhotos();
+    case 'guestbook': return stepGuestbook();
+    case 'preview': return stepPreview();
+    case 'payment': return stepPayment();
+    case 'published': return stepPublished();
+  }
+}
+
+function footerActions(opts){
+  opts = opts || {};
+  return `
+  <div class="footer-actions">
+    <div>${opts.showBack===false ? '' : `<button class="btn btn-ghost" id="backBtn">Back</button>`}</div>
+    <div class="right">${opts.nextLabel ? `<button class="btn btn-primary" id="nextBtn">${opts.nextLabel}</button>` : ''}</div>
+  </div>`;
+}
+
+/* ---------- step 1: signup ---------- */
+function stepSignup(){
+  return `
+  <div class="eyebrow panel-eyebrow">Step 1 of 8</div>
+  <h2>Create your account</h2>
+  <p class="sub">Just enough to get started — name, email, password.</p>
+  <div class="field" id="f-name"><label>Your name</label><input id="in-name" value="${esc(state.user.name)}" placeholder="Jordan Lee" /><div class="err-msg">Enter your name to continue.</div></div>
+  <div class="field" id="f-email"><label>Email</label><input id="in-email" type="email" value="${esc(state.user.email)}" placeholder="you@example.com" /><div class="err-msg">Enter a valid email.</div></div>
+  <div class="field"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+  ${footerActions({showBack:false, nextLabel:'Continue'})}
+  `;
+}
+
+/* ---------- step 2: template ---------- */
+function stepTemplate(){
+  const cards = TEMPLATES.map(t=>`
+    <div class="tpl-card ${state.memorial.template===t.id?'selected':''}" data-id="${t.id}">
+      <div class="tpl-swatch" style="background:${t.bg}; display:flex; align-items:center; justify-content:center;">
+        <div style="width:30%;height:8px;border-radius:4px;background:${t.accent};"></div>
+      </div>
+      <div class="tpl-name" style="color:#21242A">${t.name}</div>
+      <div class="tpl-region">${t.region}</div>
+    </div>`).join('');
+  return `
+  <div class="eyebrow panel-eyebrow">Step 2 of 8</div>
+  <h2>Choose a template</h2>
+  <p class="sub">Only 8 templates, each carefully designed. You can preview before you pay.</p>
+  <div class="tpl-grid">${cards}</div>
+  ${footerActions({nextLabel:'Continue'})}
+  `;
+}
+
+/* ---------- step 3: details ---------- */
+function stepDetails(){
+  const m = state.memorial;
+  return `
+  <div class="eyebrow panel-eyebrow">Step 3 of 8</div>
+  <h2>Tell us about them</h2>
+  <p class="sub">This becomes the heart of the memorial page.</p>
+  <div class="field" id="f-mname"><label>Full name</label><input id="in-mname" value="${esc(m.name)}" placeholder="Margaret Holloway" /><div class="err-msg">Enter their name.</div></div>
+  <div class="grid-2">
+    <div class="field" id="f-dob"><label>Date of birth</label><input id="in-dob" type="date" value="${esc(m.dob)}" /><div class="err-msg">Enter a date of birth.</div></div>
+    <div class="field" id="f-dop"><label>Date of passing</label><input id="in-dop" type="date" value="${esc(m.dop)}" /><div class="err-msg">Enter a date of passing.</div></div>
+  </div>
+  <div class="field"><label>Biography</label><textarea id="in-bio" placeholder="Share who they were, what they loved, the moments worth remembering.">${esc(m.bio)}</textarea></div>
+  <div class="field">
+    <label>Life story chapters <span style="font-weight:400;color:var(--ink-soft);">(optional — turns into an animated story section on the page)</span></label>
+    <div class="hint" style="margin-bottom:12px;">Add a few key chapters of their life — a childhood memory, a career, a love story. Each one pairs automatically with a photo you upload, in order.</div>
+    <div id="chaptersList">${renderChapters(m.storyChapters)}</div>
+    ${m.storyChapters.length < 4 ? `<button class="btn btn-ghost" id="addChapterBtn" type="button" style="margin-top:6px;">+ Add a chapter</button>` : `<div class="hint">Up to 4 chapters — that's plenty for a clear story.</div>`}
+  </div>
+  <div class="grid-2">
+    <div class="field"><label>Family members (optional)</label><input id="in-family" value="${esc(m.family)}" placeholder="Spouse, children, grandchildren" /></div>
+    <div class="field"><label>Location (optional)</label><input id="in-location" value="${esc(m.location)}" placeholder="City, country" /></div>
+  </div>
+  <div class="field"><label>Religion (optional)</label><input id="in-religion" value="${esc(m.religion)}" placeholder="Leave blank if not applicable" /></div>
+  ${footerActions({nextLabel:'Continue'})}
+  `;
+}
+
+function renderChapters(chapters){
+  if(!chapters.length) return '';
+  return chapters.map((c,i)=>`
+    <div class="chapter-row" data-i="${i}">
+      <input class="ch-year" placeholder="Year or era" value="${esc(c.year)}" style="width:120px;" />
+      <input class="ch-title" placeholder="Chapter title" value="${esc(c.title)}" />
+      <button class="rm-chapter" data-i="${i}" type="button">✕</button>
+      <textarea class="ch-text" placeholder="A few sentences about this chapter">${esc(c.text)}</textarea>
+    </div>`).join('');
+}
+
+/* ---------- step 4: photos ---------- */
+function maxPhotos(){ return state.purchasedAddons.includes('extra-photos') ? 40 : 20; }
+
+function stepPhotos(){
+  const max = maxPhotos();
+  const thumbs = state.memorial.photos.map((src,i)=>`
+    <div class="photo-thumb"><img src="${src}" /><div class="rm" data-i="${i}">✕</div></div>`).join('');
+  return `
+  <div class="eyebrow panel-eyebrow">Step 4 of 8</div>
+  <h2>Upload photos</h2>
+  <p class="sub">Up to ${max} photos. Drag and drop, or choose from your device.</p>
+  <div class="dropzone" id="dropzone">Drag photos here, or click to browse · ${state.memorial.photos.length}/${max} added</div>
+  <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+  <div class="photo-grid">${thumbs}</div>
+  <label class="checkbox-row"><input type="checkbox" id="hasVideo" ${state.memorial.hasVideo?'checked':''}/> I'd like to add a video tribute (optional add-on, set up after publishing)</label>
+  ${footerActions({nextLabel:'Continue'})}
+  `;
+}
+
+/* ---------- step 5: guestbook ---------- */
+function stepGuestbook(){
+  const opts = [
+    {id:'public', t:'Public guestbook', d:'Anyone with the link can leave a message of condolence.'},
+    {id:'private', t:'Private guestbook', d:'Only people you invite can leave messages.'},
+    {id:'off', t:'No guestbook', d:'Turn this off entirely. You can enable it later.'},
+  ];
+  const cards = opts.map(o=>`
+    <label class="radio-card ${state.memorial.guestbook===o.id?'selected':''}" data-id="${o.id}">
+      <input type="radio" name="gb" ${state.memorial.guestbook===o.id?'checked':''}/>
+      <div><div class="t">${o.t}</div><div class="d">${o.d}</div></div>
+    </label>`).join('');
+  return `
+  <div class="eyebrow panel-eyebrow">Step 5 of 8</div>
+  <h2>Guestbook</h2>
+  <p class="sub">Let visitors share memories and condolences.</p>
+  ${cards}
+  ${footerActions({nextLabel:'Continue'})}
+  `;
+}
+
+/* ---------- step 6: preview ---------- */
+function stepPreview(){
+  return `
+  <div class="eyebrow panel-eyebrow">Step 6 of 8</div>
+  <h2>Preview the memorial</h2>
+  <p class="sub">This is exactly how visitors will see it once it's live.</p>
+  ${renderBrowserFrame()}
+  ${footerActions({nextLabel:'Looks good — continue to payment'})}
+  `;
+}
+
+/* ---------- step 7: payment ---------- */
+function stepPayment(){
+  return `
+  <div class="eyebrow panel-eyebrow">Step 7 of 8</div>
+  <h2>Payment</h2>
+  <p class="sub">One time. No subscription, no renewal.</p>
+  <div class="price-box">
+    <div><div style="font-weight:600;font-size:14px;">Memorial website</div><div class="hint">One time payment, nothing recurring</div></div>
+    <div class="amt">$5</div>
+  </div>
+  <div class="included-row" style="margin:0 0 26px;max-width:none;">
+    ${FEATURES.map(f=>`<div class="included-card"><div class="t">${f.t}</div><div class="d">${f.d}</div></div>`).join('')}
+  </div>
+  <div class="pay-options">
+    ${['card','paypal','apple','google'].map(m=>`<div class="pay-opt ${state.payMethod===m?'selected':''}" data-m="${m}">${m==='card'?'Credit card':m==='paypal'?'PayPal':m==='apple'?'Apple Pay':'Google Pay'}</div>`).join('')}
+  </div>
+  ${state.payMethod==='card' ? `
+    <div class="field"><label>Card number</label><input placeholder="4242 4242 4242 4242" maxlength="19" /></div>
+    <div class="grid-2">
+      <div class="field"><label>Expiry</label><input placeholder="MM/YY" maxlength="5"/></div>
+      <div class="field"><label>CVC</label><input placeholder="123" maxlength="3"/></div>
+    </div>` : `<p class="sub" style="margin-bottom:24px;">You'll be redirected to confirm payment of $5 with ${state.payMethod==='paypal'?'PayPal':state.payMethod==='apple'?'Apple Pay':'Google Pay'} (simulated for this demo).</p>`}
+  ${footerActions({nextLabel:'Pay $5 and publish'})}
+  `;
+}
+
+/* ---------- step 8: published ---------- */
+function stepPublished(){
+  const slug = slugify(state.memorial.name);
+  const hasDomain = state.purchasedAddons.includes('custom-domain');
+  const liveAddress = hasDomain ? `${slug.replace(/-/g,'')}.com` : `memorial.com/${slug}`;
+  const spend = state.purchasedAddons.reduce((sum,id)=>{ const a = ADDONS.find(x=>x.id===id); return sum + (a?a.price:0); },0);
+  const purchasedNames = state.purchasedAddons.map(id=> ADDONS.find(a=>a.id===id)?.name).filter(Boolean);
+  return `
+  <div class="published-hero">
+    <div class="published-candle">${candleSVG(true,46)}</div>
+    <div class="eyebrow panel-eyebrow">Step 8 of 8</div>
+    <h2>Their memorial is live.</h2>
+    <p class="sub" style="max-width:420px;margin:0 auto;">A light has been lit. The page below is live and ready to share with family and friends.</p>
+    <div class="live-url-box">
+      <span>${liveAddress}</span>
+      <button class="copy-btn" id="copyLinkBtn">Copy link</button>
+    </div>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card"><div class="v">${state.dashboardSeed?.visitors ?? 0}</div><div class="l">Visitors</div></div>
+    <div class="dash-card"><div class="v">${state.guestbookEntries.length}</div><div class="l">Messages</div></div>
+    <div class="dash-card"><div class="v">${state.memorial.photos.length}</div><div class="l">Photos</div></div>
+    <div class="dash-card"><div class="v">$${spend}</div><div class="l">Add-ons purchased</div></div>
+  </div>
+  ${purchasedNames.length ? `<div class="addon-badges">${purchasedNames.map(n=>`<span class="addon-badge">✓ ${esc(n)}</span>`).join('')}</div>` : ''}
+  ${renderBrowserFrame(true)}
+  <div style="text-align:center;margin-top:26px;">
+    <button class="btn btn-ghost" id="upgradeBtn">Explore add-ons (custom design, video tribute, QR code…)</button>
+  </div>
+  `;
+}
+
+/* ---------------- add-on store ---------------- */
+function renderAddonsScreen(){
+  if(state.addonScreen === 'checkout') return renderAddonCheckout();
+  if(state.addonScreen === 'done') return renderAddonDone();
+  return renderAddonStore();
+}
+
+function fmtPrice(a){ return a.recurring ? `$${a.price}/yr` : `$${a.price}`; }
+
+function renderAddonStore(){
+  const categories = [...new Set(ADDONS.map(a=>a.category))];
+  const cartTotal = state.cart.reduce((sum,id)=>{ const a=ADDONS.find(x=>x.id===id); return sum + (a?a.price:0); },0);
+  const groups = categories.map(cat=>`
+    <div class="addon-category">
+      <h3>${cat}</h3>
+      <div class="addon-grid">
+        ${ADDONS.filter(a=>a.category===cat).map(a=>{
+          const owned = state.purchasedAddons.includes(a.id);
+          const inCart = state.cart.includes(a.id);
+          return `
+          <div class="addon-card ${owned?'owned':''}">
+            <div class="addon-card-top">
+              <div class="addon-name">${a.name}</div>
+              <div class="addon-price">${fmtPrice(a)}</div>
+            </div>
+            <p class="addon-desc">${a.desc}</p>
+            <button class="preview-link" data-preview="${a.id}">See what this looks like →</button>
+            ${owned
+              ? `<button class="btn btn-ghost addon-btn" disabled>Added ✓</button>`
+              : `<button class="btn ${inCart?'btn-ghost':'btn-primary'} addon-btn" data-id="${a.id}">${inCart?'Remove from cart':'Add to cart'}</button>`}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="addons-wrap">
+    <div class="eyebrow panel-eyebrow">Add-ons</div>
+    <h2>Make the page even more theirs.</h2>
+    <p class="sub">Everything here is optional. Add only what feels right — you can always come back later.</p>
+    <button class="btn btn-ghost" id="previewAllBtn" style="margin-bottom:8px;">✦ See the page with every add-on turned on</button>
+    ${groups}
+  </div>
+  <div class="cart-bar ${state.cart.length ? 'show':''}">
+    <div class="cart-info">${state.cart.length} item${state.cart.length===1?'':'s'} · $${cartTotal}</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" id="addonBackBtn">Back to dashboard</button>
+      <button class="btn btn-primary" id="addonCheckoutBtn" ${state.cart.length?'':'disabled'}>Checkout</button>
+    </div>
+  </div>
+  `;
+}
+
+function renderAddonCheckout(){
+  const items = state.cart.map(id=>ADDONS.find(a=>a.id===id)).filter(Boolean);
+  const total = items.reduce((s,a)=>s+a.price,0);
+  return `
+  <div class="addons-wrap">
+    <div class="eyebrow panel-eyebrow">Checkout</div>
+    <h2>Confirm your add-ons</h2>
+    <p class="sub">One time charges, except where noted.</p>
+    <div class="cart-summary">
+      ${items.map(a=>`<div class="cart-line"><span>${a.name}</span><span>${fmtPrice(a)}</span></div>`).join('')}
+      <div class="cart-line total"><span>Total due today</span><span>$${total}</span></div>
+    </div>
+    <div class="pay-options">
+      ${['card','paypal','apple','google'].map(m=>`<div class="pay-opt ${state.addonPayMethod===m?'selected':''}" data-m="${m}">${m==='card'?'Credit card':m==='paypal'?'PayPal':m==='apple'?'Apple Pay':'Google Pay'}</div>`).join('')}
+    </div>
+    ${state.addonPayMethod==='card' ? `
+      <div class="field"><label>Card number</label><input placeholder="4242 4242 4242 4242" maxlength="19" /></div>
+      <div class="grid-2">
+        <div class="field"><label>Expiry</label><input placeholder="MM/YY" maxlength="5"/></div>
+        <div class="field"><label>CVC</label><input placeholder="123" maxlength="3"/></div>
+      </div>` : `<p class="sub" style="margin-bottom:24px;">You'll confirm payment of $${total} with ${state.addonPayMethod==='paypal'?'PayPal':state.addonPayMethod==='apple'?'Apple Pay':'Google Pay'} (simulated for this demo).</p>`}
+    <div class="footer-actions">
+      <button class="btn btn-ghost" id="addonStoreBackBtn">Back</button>
+      <button class="btn btn-primary" id="addonPayBtn">Pay $${total} and confirm</button>
+    </div>
+  </div>
+  `;
+}
+
+function renderAddonDone(){
+  const items = state.lastPurchased.map(id=>ADDONS.find(a=>a.id===id)).filter(Boolean);
+  return `
+  <div class="addons-wrap" style="text-align:center;max-width:480px;margin:0 auto;">
+    <div class="published-candle">${candleSVG(true,42)}</div>
+    <div class="eyebrow panel-eyebrow">Confirmed</div>
+    <h2>Added to their memorial.</h2>
+    <p class="sub">${items.map(i=>i.name).join(', ')} ${items.length===1?'is':'are'} now part of the page.</p>
+    <div class="cart-summary" style="text-align:left;">
+      ${items.map(a=>`<div class="cart-line"><span>${a.name}</span><span>${fmtPrice(a)}</span></div>`).join('')}
+    </div>
+    <p class="hint" style="margin:18px 0 24px;">
+      ${items.some(i=>i.id==='memory-book') ? 'Your printed memory book will be mailed within two weeks. ' : ''}
+      ${items.some(i=>i.id==='pro-bio') ? 'A writer will call within 1 business day to discuss the biography. ' : ''}
+      ${items.some(i=>i.id==='priority-support') ? 'A support specialist will reach out within the hour. ' : ''}
+    </p>
+    <button class="btn btn-primary" id="addonDoneBtn">Back to dashboard</button>
+  </div>
+  `;
+}
+
+/* ---------- shared: browser frame render of the memorial page ---------- */
+function renderBrowserFrame(live, ownedOverride){
+  const m = state.memorial;
+  const tpl = TEMPLATES.find(t=>t.id===m.template) || TEMPLATES[0];
+  const slug = slugify(m.name);
+  const ownedList = ownedOverride || state.purchasedAddons;
+  const owns = id => ownedList.includes(id);
+  const liveAddress = owns('custom-domain') ? `${slug.replace(/-/g,'')}.com` : `memorial.com/${slug}`;
+  const photos = m.photos.slice(0,8);
+  const galleryHtml = photos.length
+    ? `<div class="mem-gallery">${photos.map(p=>`<img src="${p}"/>`).join('')}</div>`
+    : `<div class="hint" style="opacity:.6">No photos added yet.</div>`;
+  const gbEnabled = m.guestbook !== 'off';
+  const entries = state.guestbookEntries.map(e=>`
+    <div class="mem-guestbook-entry"><b>${esc(e.name)}</b>${esc(e.msg)}</div>`).join('') || `<div class="hint" style="opacity:.6">No messages yet. Be the first to leave one.</div>`;
+  const dateLine = [fmtDate(m.dob), fmtDate(m.dop)].filter(Boolean).join('  –  ');
+  const momentPhotos = m.photos.slice(0,6);
+  const momentsHtml = momentPhotos.length >= 2 ? `
+      <div class="mem-section moments-section">
+        <h3 style="color:${tpl.accent}">Featured Moments</h3>
+        <div class="moments-carousel">
+          ${momentPhotos.map((p,i)=>`<img src="${p}" class="moment-slide ${i===0?'active':''}" />`).join('')}
+          <div class="moments-dots">${momentPhotos.map((_,i)=>`<div class="m-dot ${i===0?'active':''}"></div>`).join('')}</div>
+        </div>
+      </div>` : '';
+  const storyHtml = renderStoryChapters(m.storyChapters, m.photos, tpl.accent);
+
+  const bioNote = owns('pro-bio') ? `<div class="bio-note" style="color:${tpl.accent}">✦ Written by our biography team</div>`
+    : owns('ai-bio') ? `<div class="bio-note" style="color:${tpl.accent}">✦ Polished with AI biography enhancement</div>` : '';
+
+  const videoHtml = owns('video-tribute') ? `
+      <div class="mem-section">
+        <h3 style="color:${tpl.accent}">Video Tribute</h3>
+        <div class="video-placeholder">
+          <div class="play-btn" style="border-color:${tpl.accent};color:${tpl.accent};">▶</div>
+          <div class="video-caption">A short tribute film, made from the photos above</div>
+        </div>
+      </div>` : '';
+
+  const qrHtml = owns('qr-code') ? `
+      <div class="mem-section" style="text-align:center;">
+        <h3 style="color:${tpl.accent}">Visit in person</h3>
+        ${qrPatternSVG()}
+        <div class="hint" style="margin-top:8px;">Printable for a headstone, plaque or order-of-service card</div>
+      </div>` : '';
+
+  const designBadge = owns('custom-design') ? `<div class="design-badge" style="color:${tpl.accent};border-color:${tpl.accent};">✦ Custom design</div>` : '';
+
+  return `
+  <div class="browser-frame">
+    <div class="browser-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="browser-url">${liveAddress}</div></div>
+    <div class="memorial-page" style="background:${tpl.bg};color:${tpl.text};">
+      <div class="mem-hero">
+        ${designBadge}
+        <div class="mem-photo" style="border-color:${tpl.accent};">${photos[0] ? `<img src="${photos[0]}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : ''}</div>
+        <h3 class="mem-name">${esc(m.name) || 'Their name'}</h3>
+        <div class="mem-dates">${dateLine || 'Birth – passing dates'}</div>
+      </div>
+      ${momentsHtml}
+      <div class="mem-section"><h3 style="color:${tpl.accent}">Biography</h3><div class="mem-bio">${esc(m.bio) || 'Their story will appear here.'}</div>${bioNote}</div>
+      ${storyHtml}
+      <div class="mem-section"><h3 style="color:${tpl.accent}">Photo Gallery</h3>${galleryHtml}</div>
+      ${videoHtml}
+      ${qrHtml}
+      ${gbEnabled ? `
+      <div class="mem-section"><h3 style="color:${tpl.accent}">Guestbook</h3>${entries}
+        ${live ? `<div class="mem-gb-form"><input id="gbName" placeholder="Your name"/><input id="gbMsg" placeholder="Leave a message of remembrance"/><button class="btn btn-primary" id="gbSubmit" style="padding:9px 16px;font-size:12.5px;">Post</button></div>` : ''}
+      </div>` : ''}
+      <div class="mem-share"><button class="btn btn-ghost" style="border-color:${tpl.accent};font-size:12.5px;padding:9px 18px;">Share link</button></div>
+      <div class="mem-footer">${liveAddress} — made with Forever Pages</div>
+    </div>
+  </div>`;
+}
+
+function qrPatternSVG(){
+  // a representative scannable-style pattern for the prototype (not a real QR code)
+  let cells = '';
+  const seedPattern = [
+    1,1,1,1,1,0,1,0,1,1,1,1,1,
+    1,0,0,0,1,0,0,0,1,0,0,0,1,
+    1,0,1,0,1,1,0,1,1,0,1,0,1,
+    1,0,1,0,0,0,1,0,0,0,1,0,1,
+    1,0,0,0,1,1,1,1,1,0,0,0,1,
+    1,1,1,1,1,0,0,0,1,1,1,1,1,
+    0,0,1,0,0,1,1,1,0,0,1,0,0,
+    1,1,1,1,1,0,1,0,1,1,1,1,1,
+    1,0,0,0,1,1,0,1,1,0,0,0,1,
+    1,0,1,0,0,0,1,0,0,0,1,0,1,
+    1,0,1,0,1,1,1,1,1,0,1,0,1,
+    1,0,0,0,1,0,0,0,1,0,0,0,1,
+    1,1,1,1,1,0,1,0,1,1,1,1,1
+  ];
+  seedPattern.forEach((v,i)=>{
+    const x = i % 13, y = Math.floor(i/13);
+    if(v) cells += `<rect x="${x*8}" y="${y*8}" width="8" height="8" fill="#21242A"/>`;
+  });
+  return `<svg width="104" height="104" viewBox="0 0 104 104" style="margin:0 auto;display:block;background:#fff;border-radius:8px;">${cells}</svg>`;
+}
+
+/* ---------------- add-on demo previews ---------------- */
+function demoMemorial(){
+  const m = state.memorial;
+  const tpl = TEMPLATES.find(t=>t.id===m.template) || TEMPLATES[0];
+  const hasName = m.name && m.name.trim();
+  const sample = {
+    name:'Margaret Holloway', photo: m.photos[0] || null,
+    bio:'Margaret spent forty years teaching third grade at Lincoln Elementary and never missed a Sunday call with her grandchildren.'
+  };
+  return {
+    name: hasName ? m.name : sample.name,
+    photo: m.photos[0] || sample.photo,
+    bio: (m.bio && m.bio.trim()) ? m.bio : sample.bio,
+    slug: slugify(hasName ? m.name : sample.name),
+    tpl
+  };
+}
+
+function previewContent(id){
+  const d = demoMemorial();
+  const a = ADDONS.find(x=>x.id===id);
+  const accent = d.tpl.accent;
+  const photoCircle = d.photo ? `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : '';
+
+  const wrap = (inner) => `<div class="preview-frame" style="background:${d.tpl.bg};color:${d.tpl.text};">${inner}</div>`;
+
+  switch(id){
+    case 'custom-design':
+      return { caption:'A designer adds personal flourishes, an accent divider and refined spacing — the same template, shaped around them.',
+        before: wrap(`<div class="mem-hero" style="padding:30px 20px;"><div class="mem-photo" style="width:74px;height:74px;border-color:${accent};">${photoCircle}</div><h3 class="mem-name" style="font-size:22px;">${esc(d.name)}</h3></div>`),
+        after: wrap(`<div class="mem-hero" style="padding:30px 20px;"><div class="design-badge" style="color:${accent};border-color:${accent};">✦ Custom design</div><div class="mem-photo" style="width:74px;height:74px;border-color:${accent};box-shadow:0 0 0 4px ${d.tpl.bg}, 0 0 0 5px ${accent};">${photoCircle}</div><h3 class="mem-name" style="font-size:24px;">${esc(d.name)}</h3><div style="width:40px;height:2px;background:${accent};margin:8px auto 0;"></div></div>`)
+      };
+    case 'ai-bio':
+      return { caption:'We refine grammar, flow and tone of the biography you already wrote — same memories, clearer words.',
+        before: wrap(`<div class="mem-section"><h3 style="color:${accent}">Biography</h3><div class="mem-bio">Margaret was very loved by everyone and she was a teacher for forty years and also she liked her garden alot and tea time was very important to her every day.</div></div>`),
+        after: wrap(`<div class="mem-section"><h3 style="color:${accent}">Biography</h3><div class="mem-bio">Margaret spent forty years as a beloved teacher. Her garden and a daily cup of tea were simple rituals that brought her joy.</div><div class="bio-note" style="color:${accent}">✦ Polished with AI biography enhancement</div></div>`)
+      };
+    case 'pro-bio':
+      return { caption:'A writer interviews family by phone and crafts a complete biography for you, start to finish.',
+        before: wrap(`<div class="mem-section"><h3 style="color:${accent}">Biography</h3><div class="hint" style="opacity:.7;">${d.bio ? esc(d.bio) : 'No biography written yet.'}</div></div>`),
+        after: wrap(`<div class="mem-section"><h3 style="color:${accent}">Biography</h3><div class="mem-bio">${esc(d.bio)} A lifelong love of teaching and family shaped every chapter of her story, right up to her final days surrounded by the people she loved most.</div><div class="bio-note" style="color:${accent}">✦ Written by our biography team</div></div>`)
+      };
+    case 'video-tribute':
+      return { caption:'Turns the uploaded photos into a short, gentle tribute video, embedded right on the page.',
+        before: wrap(`<div class="mem-section"><h3 style="color:${accent}">Photo Gallery</h3><div class="hint" style="opacity:.6;">Photos only — no video section yet.</div></div>`),
+        after: wrap(`<div class="mem-section"><h3 style="color:${accent}">Video Tribute</h3><div class="video-placeholder"><div class="play-btn" style="border-color:${accent};color:${accent};">▶</div><div class="video-caption">A short tribute film, made from the photos above</div></div></div>`)
+      };
+    case 'extra-photos':
+      return { caption:'Raises the gallery limit from 20 photos to 40 — for families with a lot to share.',
+        before: wrap(`<div class="mem-section"><h3 style="color:${accent}">Photo Gallery</h3><div class="dropzone" style="opacity:.7;">20/20 added — gallery full</div></div>`),
+        after: wrap(`<div class="mem-section"><h3 style="color:${accent}">Photo Gallery</h3><div class="dropzone" style="border-color:${accent};">20/40 added — room for 20 more</div></div>`)
+      };
+    case 'qr-code':
+      return { caption:'A scannable code for a headstone, plaque or order-of-service card — opens the page instantly.',
+        before: wrap(`<div class="mem-section" style="text-align:center;"><h3 style="color:${accent}">Visit in person</h3><div class="hint" style="opacity:.6;">Not added yet.</div></div>`),
+        after: wrap(`<div class="mem-section" style="text-align:center;"><h3 style="color:${accent}">Visit in person</h3>${qrPatternSVG()}<div class="hint" style="margin-top:8px;">Printable for a headstone, plaque or order-of-service card</div></div>`)
+      };
+    case 'memory-book':
+      return { caption:'Nothing changes on the website — this is a bound, printed keepsake mailed to your door within two weeks.',
+        before: wrap(`<div class="mem-section" style="text-align:center;"><div class="hint" style="opacity:.6;">Digital memorial only.</div></div>`),
+        after: `<div class="book-mockup"><div class="book-cover" style="background:${accent};"><div class="book-photo">${photoCircle}</div><div class="book-title">${esc(d.name)}</div><div class="book-sub">A Life Remembered</div></div><div class="hint" style="margin-top:10px;">128-page hardcover · mailed within 2 weeks</div></div>`
+      };
+    case 'custom-domain':
+      return { caption:'Replace the shared address with one that\'s entirely theirs.',
+        before: `<div class="browser-frame"><div class="browser-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="browser-url">memorial.com/${d.slug}</div></div></div>`,
+        after: `<div class="browser-frame"><div class="browser-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="browser-url" style="font-weight:600;">${d.slug.replace(/-/g,'')}.com</div></div></div>`
+      };
+    case 'priority-support':
+      return { caption:'Skip the queue — a real person responds quickly when you need help.',
+        before: `<div class="support-card"><span>Standard support</span><b>Replies within 24–48 hours</b></div>`,
+        after: `<div class="support-card priority"><span>🟢 Priority support</span><b>Replies within the hour</b></div>`
+      };
+    default:
+      return { caption:a?.desc||'', before:'', after:'' };
+  }
+}
+
+function renderPreviewModal(){
+  if(state.previewModal === 'all'){
+    return `
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-card modal-wide">
+        <div class="modal-head">
+          <div><div class="eyebrow">Full preview</div><h3>The page with every add-on turned on</h3></div>
+          <button class="modal-close" id="modalCloseBtn">✕</button>
+        </div>
+        <p class="sub" style="margin-bottom:18px;">Nothing has been purchased yet — this just shows what's possible.</p>
+        ${renderBrowserFrame(true, ADDONS.map(a=>a.id))}
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="modalCloseBtn2">Close</button>
+          <button class="btn btn-primary" id="modalAddAllBtn">Add everything to cart — $${ADDONS.reduce((s,a)=>s+a.price,0)}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  const a = ADDONS.find(x=>x.id===state.previewModal);
+  if(!a) return '';
+  const c = previewContent(a.id);
+  const owned = state.purchasedAddons.includes(a.id);
+  const inCart = state.cart.includes(a.id);
+  return `
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div><div class="eyebrow">${a.name}</div><h3>${fmtPrice(a)}</h3></div>
+        <button class="modal-close" id="modalCloseBtn">✕</button>
+      </div>
+      <p class="sub" style="margin-bottom:18px;">${c.caption}</p>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-label">Without</div>
+          ${c.before}
+        </div>
+        <div class="compare-col">
+          <div class="compare-label" style="color:var(--sage);">With ${a.name}</div>
+          ${c.after}
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modalCloseBtn2">Close</button>
+        ${owned
+          ? `<button class="btn btn-ghost" disabled>Already added ✓</button>`
+          : `<button class="btn btn-primary" id="modalAddBtn" data-id="${a.id}">${inCart?'Remove from cart':`Add to cart — ${fmtPrice(a)}`}</button>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderStoryChapters(chapters, photos, accent){
+  const valid = (chapters||[]).filter(c=>(c.title && c.title.trim()) || (c.text && c.text.trim()));
+  if(!valid.length) return '';
+  return `
+      <div class="mem-section story-section">
+        <h3 style="color:${accent}">Their Story</h3>
+        <div class="story-timeline">
+          ${valid.map((c,i)=>`
+            <div class="story-chapter ${i%2===0?'left':'right'}">
+              <div class="story-photo">${photos[i] ? `<img src="${photos[i]}"/>` : ''}</div>
+              <div class="story-text">
+                ${c.year ? `<div class="story-year" style="color:${accent}">${esc(c.year)}</div>` : ''}
+                <div class="story-title">${esc(c.title) || 'A chapter of their life'}</div>
+                <div class="story-body">${esc(c.text)}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+}
+
+function fmtDate(d){
+  if(!d) return '';
+  const dt = new Date(d+'T00:00:00');
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+}
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------------- bindings ---------------- */
+function bindRestart(){
+  const restart = document.getElementById('restartBtn');
+  if(restart) restart.onclick = async ()=>{
+    if(confirm('Start over? This clears your draft.')){
+      state = {screen:'landing', stepIndex:0, user:{name:'',email:''},
+        memorial:{template:'heritage',name:'',dob:'',dop:'',bio:'',family:'',location:'',religion:'',photos:[],hasVideo:false,guestbook:'public',storyChapters:[]},
+        guestbookEntries:[], paid:false, payMethod:'card',
+        addonScreen:'store', cart:[], purchasedAddons:[], lastPurchased:[], addonPayMethod:'card', previewModal:null};
+      try{ await storageAPI.delete(STORAGE_KEY); }catch(e){}
+      render();
+    }
+  };
+}
+
+function bindWizard(){
+  bindRestart();
+
+  const back = document.getElementById('backBtn');
+  if(back) back.onclick = ()=>{ state.stepIndex = Math.max(0,state.stepIndex-1); saveDraft(); render(); };
+
+  const next = document.getElementById('nextBtn');
+  if(next) next.onclick = handleNext;
+
+  const key = STEP_DEFS[state.stepIndex].key;
+  if(key==='details'){
+    const addBtn = document.getElementById('addChapterBtn');
+    if(addBtn) addBtn.onclick = ()=>{ collectChapterEdits(); state.memorial.storyChapters.push({year:'',title:'',text:''}); render(); };
+    document.querySelectorAll('.rm-chapter').forEach(b=>{
+      b.onclick = ()=>{ collectChapterEdits(); state.memorial.storyChapters.splice(parseInt(b.dataset.i),1); render(); };
+    });
+  }
+  if(key==='template'){
+    document.querySelectorAll('.tpl-card').forEach(c=>{
+      c.onclick = ()=>{ state.memorial.template = c.dataset.id; render(); };
+    });
+  }
+  if(key==='photos'){
+    const dz = document.getElementById('dropzone');
+    const fi = document.getElementById('fileInput');
+    dz.onclick = ()=> fi.click();
+    dz.ondragover = e=>{ e.preventDefault(); dz.classList.add('drag'); };
+    dz.ondragleave = ()=> dz.classList.remove('drag');
+    dz.ondrop = e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFiles(e.dataTransfer.files); };
+    fi.onchange = e=> handleFiles(e.target.files);
+    document.querySelectorAll('.photo-thumb .rm').forEach(b=>{
+      b.onclick = ()=>{ state.memorial.photos.splice(parseInt(b.dataset.i),1); render(); };
+    });
+    const hv = document.getElementById('hasVideo');
+    if(hv) hv.onchange = ()=>{ state.memorial.hasVideo = hv.checked; };
+  }
+  if(key==='guestbook'){
+    document.querySelectorAll('.radio-card').forEach(c=>{
+      c.onclick = ()=>{ state.memorial.guestbook = c.dataset.id; render(); };
+    });
+  }
+  if(key==='payment'){
+    document.querySelectorAll('.pay-opt').forEach(p=>{
+      p.onclick = ()=>{ state.payMethod = p.dataset.m; render(); };
+    });
+  }
+  if(key==='published'){
+    const copyBtn = document.getElementById('copyLinkBtn');
+    if(copyBtn) copyBtn.onclick = ()=>{
+      const slug = slugify(state.memorial.name);
+      const hasDomain = state.purchasedAddons.includes('custom-domain');
+      const liveAddress = hasDomain ? `${slug.replace(/-/g,'')}.com` : `memorial.com/${slug}`;
+      navigator.clipboard?.writeText(liveAddress).catch(()=>{});
+      copyBtn.textContent = 'Copied';
+      setTimeout(()=>{ copyBtn.textContent='Copy link'; },1500);
+    };
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    if(upgradeBtn) upgradeBtn.onclick = ()=>{ state.addonScreen='store'; state.screen='addons'; saveDraft(); render(); };
+    bindGuestbookForm();
+  }
+  if(key==='preview'){
+    // nothing live to bind, static preview
+  }
+}
+
+function bindAddonsScreen(){
+  bindRestart();
+
+  if(state.addonScreen === 'store'){
+    document.querySelectorAll('.addon-card .addon-btn[data-id]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const id = btn.dataset.id;
+        const i = state.cart.indexOf(id);
+        if(i>-1) state.cart.splice(i,1); else state.cart.push(id);
+        saveDraft();
+        render();
+      };
+    });
+    const backBtn = document.getElementById('addonBackBtn');
+    if(backBtn) backBtn.onclick = ()=>{ state.screen='wizard'; saveDraft(); render(); };
+    const checkoutBtn = document.getElementById('addonCheckoutBtn');
+    if(checkoutBtn) checkoutBtn.onclick = ()=>{ if(state.cart.length){ state.addonScreen='checkout'; render(); } };
+    document.querySelectorAll('.preview-link').forEach(link=>{
+      link.onclick = ()=>{ state.previewModal = link.dataset.preview; render(); };
+    });
+    const previewAllBtn = document.getElementById('previewAllBtn');
+    if(previewAllBtn) previewAllBtn.onclick = ()=>{ state.previewModal = 'all'; render(); };
+  }
+
+  if(state.addonScreen === 'checkout'){
+    document.querySelectorAll('.pay-opt').forEach(p=>{
+      p.onclick = ()=>{ state.addonPayMethod = p.dataset.m; render(); };
+    });
+    const storeBack = document.getElementById('addonStoreBackBtn');
+    if(storeBack) storeBack.onclick = ()=>{ state.addonScreen='store'; render(); };
+    const payBtn = document.getElementById('addonPayBtn');
+    if(payBtn) payBtn.onclick = ()=>{
+      state.lastPurchased = [...state.cart];
+      state.purchasedAddons = [...new Set([...state.purchasedAddons, ...state.cart])];
+      state.cart = [];
+      state.addonScreen = 'done';
+      saveDraft();
+      render();
+    };
+  }
+
+  if(state.addonScreen === 'done'){
+    const doneBtn = document.getElementById('addonDoneBtn');
+    if(doneBtn) doneBtn.onclick = ()=>{ state.addonScreen='store'; state.screen='wizard'; saveDraft(); render(); };
+  }
+}
+
+function bindPreviewModal(){
+  const overlay = document.getElementById('modalOverlay');
+  const close = ()=>{ state.previewModal = null; render(); };
+  if(overlay) overlay.onclick = (e)=>{ if(e.target === overlay) close(); };
+  const c1 = document.getElementById('modalCloseBtn'); if(c1) c1.onclick = close;
+  const c2 = document.getElementById('modalCloseBtn2'); if(c2) c2.onclick = close;
+
+  const addBtn = document.getElementById('modalAddBtn');
+  if(addBtn) addBtn.onclick = ()=>{
+    const id = addBtn.dataset.id;
+    const i = state.cart.indexOf(id);
+    if(i>-1) state.cart.splice(i,1); else state.cart.push(id);
+    saveDraft();
+    render();
+  };
+  const addAllBtn = document.getElementById('modalAddAllBtn');
+  if(addAllBtn) addAllBtn.onclick = ()=>{
+    state.cart = [...new Set([...state.cart, ...ADDONS.map(a=>a.id).filter(id=>!state.purchasedAddons.includes(id))])];
+    state.previewModal = null;
+    saveDraft();
+    render();
+  };
+}
+
+function bindGuestbookForm(){
+  const submit = document.getElementById('gbSubmit');
+  if(!submit) return;
+  submit.onclick = ()=>{
+    const name = document.getElementById('gbName').value.trim();
+    const msg = document.getElementById('gbMsg').value.trim();
+    if(!name || !msg) return;
+    state.guestbookEntries.push({name, msg: ' — '+msg});
+    saveDraft();
+    render();
+  };
+}
+
+function handleFiles(files){
+  const remaining = maxPhotos() - state.memorial.photos.length;
+  const arr = Array.from(files).slice(0, remaining);
+  arr.forEach(file=>{
+    if(!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{ state.memorial.photos.push(reader.result); render(); };
+    reader.readAsDataURL(file);
+  });
+}
+
+function collectChapterEdits(){
+  document.querySelectorAll('#chaptersList .chapter-row').forEach(row=>{
+    const i = parseInt(row.dataset.i);
+    state.memorial.storyChapters[i] = {
+      year: row.querySelector('.ch-year').value,
+      title: row.querySelector('.ch-title').value,
+      text: row.querySelector('.ch-text').value,
+    };
+  });
+}
+
+function setFieldError(id, isError){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('error', isError);
+}
+
+function handleNext(){
+  const key = STEP_DEFS[state.stepIndex].key;
+
+  if(key==='signup'){
+    const name = document.getElementById('in-name').value.trim();
+    const email = document.getElementById('in-email').value.trim();
+    const emailOk = /\S+@\S+\.\S+/.test(email);
+    setFieldError('f-name', !name);
+    setFieldError('f-email', !emailOk);
+    if(!name || !emailOk) return;
+    state.user = {name, email};
+  }
+
+  if(key==='details'){
+    const name = document.getElementById('in-mname').value.trim();
+    const dob = document.getElementById('in-dob').value;
+    const dop = document.getElementById('in-dop').value;
+    setFieldError('f-mname', !name);
+    setFieldError('f-dob', !dob);
+    setFieldError('f-dop', !dop);
+    if(!name || !dob || !dop) return;
+    state.memorial.name = name;
+    state.memorial.dob = dob;
+    state.memorial.dop = dop;
+    state.memorial.bio = document.getElementById('in-bio').value.trim();
+    state.memorial.family = document.getElementById('in-family').value.trim();
+    state.memorial.location = document.getElementById('in-location').value.trim();
+    state.memorial.religion = document.getElementById('in-religion').value.trim();
+    collectChapterEdits();
+  }
+
+  if(key==='payment'){
+    state.paid = true;
+    state.dashboardSeed = { visitors: Math.floor(Math.random()*4) };
+  }
+
+  state.stepIndex = Math.min(STEP_DEFS.length-1, state.stepIndex+1);
+  saveDraft();
+  render();
+}
+
+loadDraft();
+</script>
+</body>
+</html>
